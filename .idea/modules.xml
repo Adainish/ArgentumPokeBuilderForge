@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ArgentumPokeBuilderForge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ArgentumPokeBuilderForge.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ArgentumPokeBuilderForge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ArgentumPokeBuilderForge.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.adainish.ArgentumPokeBuilderForge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.adainish.ArgentumPokeBuilderForge.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.adainish.ArgentumPokeBuilderForge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.adainish.ArgentumPokeBuilderForge.test.iml" />
     </modules>
   </component>
 </project>

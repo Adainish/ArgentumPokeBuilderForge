@@ -12,6 +12,9 @@ import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonItems;
+import com.cobblemon.mod.common.api.abilities.Ability;
+import com.cobblemon.mod.common.api.abilities.AbilityPool;
+import com.cobblemon.mod.common.api.abilities.PotentialAbility;
 import com.cobblemon.mod.common.api.pokeball.PokeBalls;
 import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
@@ -48,6 +51,8 @@ public class PokeBuilder
     public Stat selectedStat;
 
     public SpeciesFeature speciesFeature;
+
+    public PotentialAbility potentialAbility;
 
 
     public PokeBuilder(Player player)
@@ -227,6 +232,28 @@ public class PokeBuilder
                             .build();
                     buttons.add(gooeyButton);
                 }
+                break;
+            }
+            case ABILITY -> {
+
+                this.selectedPokemon.getForm().getAbilities().forEach(potentialAbility -> {
+                    try {
+                        GooeyButton button = GooeyButton.builder()
+                                .title(Util.formattedString("&e%ability%".replace("%ability%", potentialAbility.getTemplate().getDisplayName())))
+                                .lore(Util.formattedArrayList(Arrays.asList(potentialAbility.getTemplate().getDescription())))
+                                .display(new ItemStack(CobblemonItems.BLACK_SLUDGE.get()))
+                                .onClick(b -> {
+                                    this.potentialAbility = potentialAbility;
+                                    UIManager.openUIForcefully(b.getPlayer(), purchaseGUI());
+                                })
+                                .build();
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                });
+
                 break;
             }
 
@@ -461,18 +488,29 @@ public class PokeBuilder
                 }
                 break;
             }
+            case ABILITY -> {
+                Ability ability = (Ability) this.potentialAbility;
+
+                if (ability != null) {
+                    selectedPokemon.setAbility(ability);
+                    message = "&aAdjusted your Pokemon's ability to %ability%".replace("%ability%", ability.getDisplayName());
+                }
+                break;
+            }
             case POKEBALL -> {
                 PokeBall pokeBall = PokeBalls.INSTANCE.getPokeBall(new ResourceLocation(this.selectedAction));
-                if (pokeBall != null)
+                if (pokeBall != null) {
                     selectedPokemon.setCaughtBall(pokeBall);
-                message = "&aAdjusted your Pokemon's pokeball to %pokeball%".replace("%pokeball%", pokeBall.getName().getPath().toString().replaceAll("_", " "));
+                    message = "&aAdjusted your Pokemon's pokeball to %pokeball%".replace("%pokeball%", pokeBall.getName().getPath().toString().replaceAll("_", " "));
+                }
                 break;
             }
             case NATURE -> {
                 Nature nature = Natures.INSTANCE.getNature(new ResourceLocation(this.selectedAction));
-                if (nature != null)
+                if (nature != null) {
                     selectedPokemon.setNature(nature);
-                message = "&aAdjusted your Pokemon's nature to %nature%".replace("%nature%", nature.getDisplayName().replace("cobblemon", "").replaceAll("\\.", "").replace("nature", ""));
+                    message = "&aAdjusted your Pokemon's nature to %nature%".replace("%nature%", nature.getDisplayName().replace("cobblemon", "").replaceAll("\\.", "").replace("nature", ""));
+                }
                 break;
             }
             case GENDER -> {
