@@ -7,6 +7,7 @@ import io.github.adainish.argentumpokebuilderforge.enumerations.BuilderType;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class PokeBuilderDataManager
 
     public List<String> blacklistedSpecies = new ArrayList<>();
 
+    public List<String> genderPreventionIDList = new ArrayList<>(Arrays.asList("cobblemon:latias", "cobblemon:latios", "cobblemon:volbeat", "cobblemon:illumise", "cobblemon:jynx", "cobblemon:kangaskhan", "cobblemon:blissey", "cobblemon:chansey", "cobblemon:happiny", "cobblemon:smoochum", "cobblemon:hitmonlee", "cobblemon:hitmonchan", "cobblemon:hitmontop", "cobblemon:nidoqueen", "cobblemon:nidoking", "cobblemon:nidoran", "cobblemon:nidorina", "cobblemon:nidorino", "cobblemon:tauros", "cobblemon:miltank", "cobblemon:wormadam", "cobblemon:mothim", "cobblemon:vespiquen", "cobblemon:gallade", "cobblemon:froslass", "cobblemon:cresselia", "cobblemon:throh", "cobblemon:sawk", "cobblemon:petilil", "cobblemon:lilligant", "cobblemon:braviary", "cobblemon:mandibuzz", "cobblemon:tornadus", "cobblemon:landorus", "cobblemon:thundurus", "cobblemon:enamorus", "cobblemon:florges", "cobblemon:flabebe", "cobblemon:floette", "cobblemon:salazzle", "cobblemon:steenee", "cobblemon:bounsweet", "cobblemon:tsareena", "cobblemon:alcremie", "cobblemon:tinkatink", "cobblemon:tinkatuff", "cobblemon:tinkaton", "cobblemon:grimmsnarl", "cobblemon:hatterene"));
     public PokeBuilderDataManager()
     {
         init();

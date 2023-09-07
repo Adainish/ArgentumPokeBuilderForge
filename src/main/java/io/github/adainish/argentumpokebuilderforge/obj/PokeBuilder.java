@@ -17,6 +17,7 @@ import com.cobblemon.mod.common.api.abilities.AbilityPool;
 import com.cobblemon.mod.common.api.abilities.PotentialAbility;
 import com.cobblemon.mod.common.api.pokeball.PokeBalls;
 import com.cobblemon.mod.common.api.pokemon.Natures;
+import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
@@ -239,14 +240,15 @@ public class PokeBuilder
                 this.selectedPokemon.getForm().getAbilities().forEach(potentialAbility -> {
                     try {
                         GooeyButton button = GooeyButton.builder()
-                                .title(Util.formattedString("&e%ability%".replace("%ability%", potentialAbility.getTemplate().getDisplayName())))
-                                .lore(Util.formattedArrayList(Arrays.asList(potentialAbility.getTemplate().getDescription())))
+                                .title(Util.formattedString("&e%ability%".replace("%ability%", potentialAbility.getTemplate().getName())))
+                                .lore(Util.formattedArrayList(Arrays.asList(potentialAbility.getTemplate().create(true).getDescription())))
                                 .display(new ItemStack(CobblemonItems.BLACK_SLUDGE.get()))
                                 .onClick(b -> {
                                     this.potentialAbility = potentialAbility;
                                     UIManager.openUIForcefully(b.getPlayer(), purchaseGUI());
                                 })
                                 .build();
+                        buttons.add(button);
                     } catch (Exception e)
                     {
                         e.printStackTrace();
@@ -327,6 +329,13 @@ public class PokeBuilder
                                 .title(Util.formattedString("&cAlready this gender"))
                                 .display(new ItemStack(Items.TNT))
                                 .build();
+                    if (isPokemonNonGenderExchangeable(this.selectedPokemon))
+                    {
+                        button = GooeyButton.builder()
+                                .title(Util.formattedString("&cThis Pokemon's Gender can't change!"))
+                                .display(new ItemStack(Items.TNT))
+                                .build();
+                    }
                     buttons.add(button);
                 }
                 break;
@@ -377,6 +386,10 @@ public class PokeBuilder
         return buttons;
     }
 
+    public boolean isPokemonNonGenderExchangeable(Pokemon pokemon)
+    {
+        return ArgentumPokeBuilderForge.config.pokeBuilderDataManager.genderPreventionIDList.contains(pokemon.getSpecies().resourceIdentifier.toString());
+    }
     public List<Button> builderTypeButtonList()
     {
         List<Button> buttons = new ArrayList<>();
@@ -489,11 +502,11 @@ public class PokeBuilder
                 break;
             }
             case ABILITY -> {
-                Ability ability = (Ability) this.potentialAbility;
+                Ability ability = this.potentialAbility.getTemplate().create(true);
 
                 if (ability != null) {
                     selectedPokemon.setAbility(ability);
-                    message = "&aAdjusted your Pokemon's ability to %ability%".replace("%ability%", ability.getDisplayName());
+                    message = "&aAdjusted your Pokemon's ability to %ability%".replace("%ability%", ability.getName());
                 }
                 break;
             }
