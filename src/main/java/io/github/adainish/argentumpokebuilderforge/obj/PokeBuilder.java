@@ -224,7 +224,7 @@ public class PokeBuilder
                         continue;
                     GooeyButton gooeyButton = GooeyButton.builder()
                             .title(Util.formattedString("&e" + stat.getDisplayName().getString()))
-                            .display(new ItemStack(CobblemonItems.MUSCLE_BAND.get()))
+                            .display(new ItemStack(CobblemonItems.MUSCLE_BAND.asItem()))
                             .onClick(b -> {
                                 this.selectedStat = stat;
                                 //go to amount edit menu
@@ -242,7 +242,7 @@ public class PokeBuilder
                         GooeyButton button = GooeyButton.builder()
                                 .title(Util.formattedString("&e%ability%".replace("%ability%", potentialAbility.getTemplate().getName())))
                                 .lore(Util.formattedArrayList(Arrays.asList(potentialAbility.getTemplate().create(true).getDescription())))
-                                .display(new ItemStack(CobblemonItems.BLACK_SLUDGE.get()))
+                                .display(new ItemStack(CobblemonItems.BLACK_SLUDGE.asItem()))
                                 .onClick(b -> {
                                     this.potentialAbility = potentialAbility;
                                     UIManager.openUIForcefully(b.getPlayer(), purchaseGUI());
@@ -296,7 +296,7 @@ public class PokeBuilder
                 } else {
                     button = GooeyButton.builder()
                             .title(Util.formattedString("&aShiny"))
-                            .display(new ItemStack(CobblemonItems.SHINY_STONE.get()))
+                            .display(new ItemStack(CobblemonItems.SHINY_STONE.asItem()))
                             .onClick(b -> {
                                 //open purchase
                                 this.selectedAction = "true";
@@ -345,7 +345,7 @@ public class PokeBuilder
                     GooeyButton button = GooeyButton.builder()
                             .title(Util.formattedString("") + nature.getDisplayName().replace("cobblemon", "").replaceAll("\\.", "").replace("nature", ""))
                             .lore(Util.formattedArrayList(Arrays.asList("&a+" + getOrDefaultStringStat(nature.getIncreasedStat()), "&c-" + getOrDefaultStringStat(nature.getDecreasedStat()))))
-                            .display(new ItemStack(CobblemonItems.MIRACLE_SEED.get()))
+                            .display(new ItemStack(CobblemonItems.MIRACLE_SEED.asItem()))
                             .onClick(b -> {
                                 //open purchase
                                 this.selectedAction = nature.getName().toString();
@@ -624,7 +624,7 @@ public class PokeBuilder
             case EVS, FRIENDSHIP -> {
                 GooeyButton increaseOne = GooeyButton.builder()
                         .title(Util.formattedString("&a+1"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(1);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -633,7 +633,7 @@ public class PokeBuilder
 
                 GooeyButton increaseTen = GooeyButton.builder()
                         .title(Util.formattedString("&a+10"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(10);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -642,7 +642,7 @@ public class PokeBuilder
 
                 GooeyButton increaseTwentyFive = GooeyButton.builder()
                         .title(Util.formattedString("&a+25"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(25);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -651,7 +651,7 @@ public class PokeBuilder
 
                 GooeyButton increaseFifty = GooeyButton.builder()
                         .title(Util.formattedString("&a+50"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(50);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -660,7 +660,7 @@ public class PokeBuilder
 
                 GooeyButton increaseHundred = GooeyButton.builder()
                         .title(Util.formattedString("&a+100"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(100);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -669,7 +669,7 @@ public class PokeBuilder
 
                 GooeyButton increaseMax = GooeyButton.builder()
                         .title(Util.formattedString("&a+Max Amount"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(getMaxAmount());
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -685,7 +685,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseOne = GooeyButton.builder()
                         .title(Util.formattedString("&c-1"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(1);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -694,7 +694,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseTen = GooeyButton.builder()
                         .title(Util.formattedString("&c-10"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(10);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -703,7 +703,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseTwentyFive = GooeyButton.builder()
                         .title(Util.formattedString("&c-25"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(25);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -712,7 +712,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseFifty = GooeyButton.builder()
                         .title(Util.formattedString("&c-50"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(50);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -721,7 +721,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseHundred = GooeyButton.builder()
                         .title(Util.formattedString("&c-100"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(100);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -730,7 +730,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseMax = GooeyButton.builder()
                         .title(Util.formattedString("&c-Max Amount"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(getMaxAmount());
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -748,7 +748,7 @@ public class PokeBuilder
             case IVS -> {
                 GooeyButton increaseOne = GooeyButton.builder()
                         .title(Util.formattedString("&a+1"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(1);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -757,7 +757,7 @@ public class PokeBuilder
 
                 GooeyButton increaseTen = GooeyButton.builder()
                         .title(Util.formattedString("&a+10"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(10);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -766,7 +766,7 @@ public class PokeBuilder
 
                 GooeyButton increaseTwentyFive = GooeyButton.builder()
                         .title(Util.formattedString("&a+25"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(25);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -776,7 +776,7 @@ public class PokeBuilder
 
                 GooeyButton increaseMax = GooeyButton.builder()
                         .title(Util.formattedString("&a+Max Amount"))
-                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.get()))
+                        .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
                         .onClick(b -> {
                             increaseAmount(getMaxAmount());
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -790,7 +790,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseOne = GooeyButton.builder()
                         .title(Util.formattedString("&c-1"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(1);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -799,7 +799,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseTen = GooeyButton.builder()
                         .title(Util.formattedString("&c-10"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(10);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -808,7 +808,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseTwentyFive = GooeyButton.builder()
                         .title(Util.formattedString("&c-25"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(25);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -817,7 +817,7 @@ public class PokeBuilder
 
                 GooeyButton decreaseMax = GooeyButton.builder()
                         .title(Util.formattedString("&c-Max Amount"))
-                        .display(new ItemStack(CobblemonItems.MAGMARIZER.get()))
+                        .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
                         .onClick(b -> {
                             decreaseAmount(getMaxAmount());
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());

@@ -1,42 +1,25 @@
 package io.github.adainish.argentumpokebuilderforge;
 
 import com.cobblemon.mod.common.api.Priority;
-import com.cobblemon.mod.common.api.events.CobblemonEvents;
-import com.mojang.logging.LogUtils;
+import com.cobblemon.mod.common.platform.events.PlatformEvents;
 import io.github.adainish.argentumpokebuilderforge.cmd.Command;
 import io.github.adainish.argentumpokebuilderforge.config.Config;
 import io.github.adainish.argentumpokebuilderforge.config.LanguageConfig;
 import io.github.adainish.argentumpokebuilderforge.listener.PlayerListener;
 import io.github.adainish.argentumpokebuilderforge.wrapper.DataWrapper;
 import kotlin.Unit;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.plexus.util.cli.Arg;
@@ -127,8 +110,8 @@ public class ArgentumPokeBuilderForge {
                 .replace("%y", YEAR)
         );
         //do data set up
-        CobblemonEvents.SERVER_STARTED.subscribe(Priority.NORMAL, minecraftServer -> {
-            setServer(minecraftServer);
+        PlatformEvents.SERVER_STARTED.subscribe(Priority.NORMAL, t -> {
+            setServer(t.getServer());
             //init subscriptions
             playerListener = new PlayerListener();
             dataWrapper = new DataWrapper();
@@ -136,7 +119,7 @@ public class ArgentumPokeBuilderForge {
             return Unit.INSTANCE;
         });
 
-        CobblemonEvents.SERVER_STOPPING.subscribe(Priority.NORMAL, minecraftServer -> {
+        PlatformEvents.SERVER_STOPPING.subscribe(Priority.NORMAL, t -> {
             dataWrapper.playerCache.forEach((uuid, player) -> {
                 player.save();
             });
