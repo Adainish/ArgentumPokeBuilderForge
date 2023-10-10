@@ -48,7 +48,7 @@ public class PokeBuilderDataManager
             for (BuilderType builderType : BuilderType.values()) {
                 if (builderType.equals(BuilderType.UNDECIDED))
                     continue;
-                attributeIcons.put(builderType, new ItemStack(CobblemonItems.POKE_BALL.get()));
+                attributeIcons.put(builderType, new ItemStack(CobblemonItems.POKE_BALL.asItem()));
             }
         }
         if (this.blacklistedSpecies.isEmpty())
