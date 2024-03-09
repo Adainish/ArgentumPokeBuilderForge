@@ -8,27 +8,18 @@ import io.github.adainish.argentumpokebuilderforge.config.LanguageConfig;
 import io.github.adainish.argentumpokebuilderforge.listener.PlayerListener;
 import io.github.adainish.argentumpokebuilderforge.wrapper.DataWrapper;
 import kotlin.Unit;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLConfig;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.DeferredRegister;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.plexus.util.cli.Arg;
 
 import java.io.File;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(ArgentumPokeBuilderForge.MODID)
-public class ArgentumPokeBuilderForge {
+public class ArgentumPokeBuilderForge implements ModInitializer {
 
     // Define mod id in a common place for everything to reference
     public static final String MODID = "argentumpokebuilderforge";
@@ -91,16 +82,13 @@ public class ArgentumPokeBuilderForge {
     }
 
     public ArgentumPokeBuilderForge() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        // Register the commonSetup method for modloading
-        modEventBus.addListener(this::commonSetup);
-
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
     }
-
-    private void commonSetup(final FMLCommonSetupEvent event) {
+    @Override
+    public void onInitialize() {
+        this.commonSetup();
+    }
+    private void commonSetup() {
         // Some common setup code
         instance = this;
         log.info("Booting up %n by %authors %v %y"
@@ -125,16 +113,15 @@ public class ArgentumPokeBuilderForge {
             });
             return Unit.INSTANCE;
         });
-    }
 
-    @SubscribeEvent
-    public void onCommandRegistration(RegisterCommandsEvent event)
-    {
-        event.getDispatcher().register(Command.getCommand());
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryaccess, environment) -> {
+            dispatcher.register(Command.getCommand());
+        });
     }
 
     public void initDirs() {
-        setConfigDir(new File(FMLPaths.GAMEDIR.get().resolve(FMLConfig.defaultConfigPath()) + "/ArgentumPokeBuilder/"));
+        setConfigDir(new File(FabricLoader.getInstance().getConfigDir()  + "/ArgentumPokeBuilder/"));
         getConfigDir().mkdir();
         setStorage(new File(getConfigDir(), "/storage/"));
         getStorage().mkdirs();

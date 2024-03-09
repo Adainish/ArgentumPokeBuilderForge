@@ -7,7 +7,6 @@ import io.github.adainish.argentumpokebuilderforge.obj.Player;
 import io.github.adainish.argentumpokebuilderforge.util.Adapters;
 import net.minecraft.server.level.ServerPlayer;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +153,6 @@ public class PlayerStorage
         return playerList;
     }
 
-    @Nullable
     public static Player getPlayer(UUID uuid) {
         File dir = ArgentumPokeBuilderForge.getPlayerStorageDir();
         dir.mkdirs();
