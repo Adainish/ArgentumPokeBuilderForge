@@ -1,15 +1,7 @@
 package io.github.adainish.argentumpokebuilderforge.util;
 
-import com.cobblemon.mod.common.CobblemonItems;
-import com.cobblemon.mod.common.pokemon.evolution.adapters.NbtItemPredicateAdapter;
-import com.cobblemon.mod.common.util.adapters.NbtCompoundAdapter;
 import com.google.gson.*;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.nbt.TagParser;
