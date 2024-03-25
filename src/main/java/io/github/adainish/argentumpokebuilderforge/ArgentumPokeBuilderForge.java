@@ -4,8 +4,11 @@ import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.platform.events.PlatformEvents;
 import io.github.adainish.argentumpokebuilderforge.cmd.Command;
 import io.github.adainish.argentumpokebuilderforge.config.Config;
+import io.github.adainish.argentumpokebuilderforge.config.DBConfig;
 import io.github.adainish.argentumpokebuilderforge.config.LanguageConfig;
 import io.github.adainish.argentumpokebuilderforge.listener.PlayerListener;
+import io.github.adainish.argentumpokebuilderforge.storage.Database;
+import io.github.adainish.argentumpokebuilderforge.storage.PlayerStorage;
 import io.github.adainish.argentumpokebuilderforge.wrapper.DataWrapper;
 import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
@@ -39,11 +42,13 @@ public class ArgentumPokeBuilderForge implements ModInitializer {
     public static DataWrapper dataWrapper;
 
     public static Config config;
+    public static DBConfig dbConfig;
 
     public static LanguageConfig languageConfig;
 
     public static PlayerListener playerListener;
 
+    public static PlayerStorage playerStorage;
 
     public static Logger getLog() {
         return log;
@@ -100,6 +105,7 @@ public class ArgentumPokeBuilderForge implements ModInitializer {
         //do data set up
         PlatformEvents.SERVER_STARTED.subscribe(Priority.NORMAL, t -> {
             setServer(t.getServer());
+            playerStorage = new PlayerStorage();
             //init subscriptions
             playerListener = new PlayerListener();
             dataWrapper = new DataWrapper();
@@ -108,9 +114,7 @@ public class ArgentumPokeBuilderForge implements ModInitializer {
         });
 
         PlatformEvents.SERVER_STOPPING.subscribe(Priority.NORMAL, t -> {
-            dataWrapper.playerCache.forEach((uuid, player) -> {
-                player.save();
-            });
+            this.handleShutDown();
             return Unit.INSTANCE;
         });
 
@@ -133,7 +137,15 @@ public class ArgentumPokeBuilderForge implements ModInitializer {
 
     public void initConfigs() {
         log.warn("Loading Config Files");
-
+        DBConfig.writeConfig();
+        dbConfig = DBConfig.getConfig();
+        if (dbConfig != null)
+        {
+            if (dbConfig.enabled)
+            {
+                playerStorage.database = new Database();
+            }
+        }
         //write language files then assign them
         LanguageConfig.writeConfig();
         languageConfig = LanguageConfig.getConfig();
@@ -145,6 +157,13 @@ public class ArgentumPokeBuilderForge implements ModInitializer {
     public void reload() {
         initDirs();
         initConfigs();
-
     }
+
+    public void handleShutDown()
+    {
+        playerStorage.saveAll();
+        if (playerStorage.database != null)
+            playerStorage.database.shutdown();
+    }
+
 }
