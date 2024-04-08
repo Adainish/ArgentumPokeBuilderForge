@@ -1,8 +1,11 @@
 package io.github.adainish.argentumpokebuilderforge.obj;
 
+import com.google.gson.Gson;
 import io.github.adainish.argentumpokebuilderforge.ArgentumPokeBuilderForge;
 import io.github.adainish.argentumpokebuilderforge.storage.PlayerStorage;
+import io.github.adainish.argentumpokebuilderforge.util.Adapters;
 import io.github.adainish.argentumpokebuilderforge.util.Util;
+import org.bson.Document;
 
 import java.util.UUID;
 
@@ -22,9 +25,22 @@ public class Player
         ArgentumPokeBuilderForge.dataWrapper.playerCache.put(uuid, this);
     }
 
-    public void save() {
+    // Convert Player to Document
+    public Document toDocument() {
+        Gson gson  = Adapters.PRETTY_MAIN_GSON;
+        String json = gson.toJson(this);
+        return Document.parse(json);
+    }
+
+    public void saveNoCache()
+    {
+        ArgentumPokeBuilderForge.playerStorage.savePlayerNoCache(this);
+    }
+
+    public void save()
+    {
         //save to storage file
-        PlayerStorage.savePlayer(this);
+        ArgentumPokeBuilderForge.playerStorage.savePlayer(this);
     }
 
     public void sendMessage(String message)

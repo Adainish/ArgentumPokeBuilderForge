@@ -19,7 +19,7 @@ public class Command
         return Commands.literal("pokebuilder")
                 .executes(cc -> {
                     try {
-                        Player player = PlayerStorage.getPlayer(cc.getSource().getPlayerOrException().getUUID());
+                        Player player = ArgentumPokeBuilderForge.playerStorage.getPlayer(cc.getSource().getPlayerOrException().getUUID());
                         if (player != null) {
                             PokeBuilder pokeBuilder = new PokeBuilder(player);
                             //open pokebuilder GUI
@@ -55,7 +55,7 @@ public class Command
                                         .requires(commandSourceStack -> commandSourceStack.hasPermission(4))
                                         .executes(cc -> {
                                             ServerPlayer serverPlayer = EntityArgument.getPlayer(cc, "player");
-                                            Player player = PlayerStorage.getPlayer(serverPlayer.getUUID());
+                                            Player player = ArgentumPokeBuilderForge.playerStorage.getPlayer(serverPlayer.getUUID());
                                             int amount = IntegerArgumentType.getInteger(cc, "amount");
                                             if (player != null) {
                                                 player.tokenCount += amount;
@@ -93,7 +93,7 @@ public class Command
                                         .requires(commandSourceStack -> commandSourceStack.hasPermission(4))
                                         .executes(cc -> {
                                             ServerPlayer serverPlayer = EntityArgument.getPlayer(cc, "player");
-                                            Player player = PlayerStorage.getPlayer(serverPlayer.getUUID());
+                                            Player player = ArgentumPokeBuilderForge.playerStorage.getPlayer(serverPlayer.getUUID());
                                             int amount = IntegerArgumentType.getInteger(cc, "amount");
                                             if (player != null) {
                                                 player.tokenCount -= amount;
@@ -117,7 +117,7 @@ public class Command
                 )
                 .then(Commands.literal("tokens")
                         .executes(cc -> {
-                            Player player = PlayerStorage.getPlayer(cc.getSource().getPlayerOrException().getUUID());
+                            Player player = ArgentumPokeBuilderForge.playerStorage.getPlayer(cc.getSource().getPlayerOrException().getUUID());
                             if (player != null) {
                                 player.sendMessage("&7You have %amount% tokens".replace("%amount%", String.valueOf(player.tokenCount)));
                             } else {
