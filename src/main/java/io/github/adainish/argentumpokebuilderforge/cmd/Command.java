@@ -28,7 +28,8 @@ public class Command
                             Util.send(cc.getSource(), "&cUnable to load your pokebuilder data...");
                         }
                     } catch (Exception e) {
-
+                        Util.send(cc.getSource(), "&cAn error occurred while trying to open the Pokebuilder GUI. Please check the console for details.");
+                        ArgentumPokeBuilderForge.getLog().error("Error while executing pokebuilder command", e);
                     }
                     return 1;
                 })

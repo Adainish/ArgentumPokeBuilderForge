@@ -140,7 +140,7 @@ public class PlayerStorage
 
             try {
                 FileWriter writer = new FileWriter(file);
-                writer.write(gson.toJson(this));
+                writer.write(gson.toJson(player));
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -21,18 +21,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-// The value here should match an entry in the META-INF/mods.toml file
 public class ArgentumPokeBuilderForge implements ModInitializer {
-
-    // Define mod id in a common place for everything to reference
-    public static final String MODID = "argentumpokebuilderforge";
     // Directly reference a slf4j logger
-
     public static ArgentumPokeBuilderForge instance;
     public static final String MOD_NAME = "ArgentumPokeBuilder";
-    public static final String VERSION = "1.0.0-Beta";
+    public static final String VERSION = "1.1.0";
     public static final String AUTHORS = "Winglet";
-    public static final String YEAR = "2023";
+    public static final String YEAR = "2025";
     private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(MOD_NAME);
     private static File configDir;
     private static File storage;
@@ -162,8 +157,8 @@ public class ArgentumPokeBuilderForge implements ModInitializer {
     public void handleShutDown()
     {
         playerStorage.saveAll();
-        if (playerStorage.database != null)
-            playerStorage.database.shutdown();
+//        if (playerStorage.database != null)
+//            playerStorage.database.shutdown();
     }
 
 }
