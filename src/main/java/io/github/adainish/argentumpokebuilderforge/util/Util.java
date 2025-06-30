@@ -11,8 +11,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Util
 {
@@ -59,14 +61,7 @@ public class Util
 
     public static int getIntFromStat(Stats stat, Pokemon pokemon, boolean ivs)
     {
-        int am = 0;
-        if (ivs)
-        {
-            am = pokemon.getIvs().getOrDefault(stat);
-        } else {
-            am = pokemon.getEvs().getOrDefault(stat);
-        }
-        return am;
+        return ivs ? pokemon.getIvs().getOrDefault(stat) : pokemon.getEvs().getOrDefault(stat);
     }
 
 
@@ -75,36 +70,19 @@ public class Util
         list.add("&7Friendship: &e" + p.getFriendship());
         if (p.getShiny())
             list.add("&6&lShiny");
-        list.add("&7Ball:&e " + p.getCaughtBall().getName().getPath().replace("_", " "));
-        list.add("&7Ability:&e " + p.getAbility().getName().toLowerCase());
-        list.add("&7Nature:&e " + p.getNature().getDisplayName().replace("cobblemon", "").replaceAll("\\.", "").replace("nature", ""));
-        list.add("&7Gender:&e " + p.getGender().name().toLowerCase());
-
-        list.add("&7IVS: (&f%ivs%%&7)".replace("%ivs%", String.valueOf(getIVSPercentage(1, p))));
-        list.add("&cHP: %hp% &7/ &6Atk: %atk% &7/ &eDef: %def%"
+        list.addAll(Arrays.asList("&7Ball:&e " + p.getCaughtBall().getName().getPath().replace("_", " "), "&7Ability:&e " + p.getAbility().getName().toLowerCase(), "&7Nature:&e " + p.getNature().getDisplayName().replace("cobblemon", "").replaceAll("\\.", "").replace("nature", ""), "&7Gender:&e " + p.getGender().name().toLowerCase(), "&7IVS: (&f%ivs%%&7)".replace("%ivs%", String.valueOf(getIVSPercentage(1, p))), "&cHP: %hp% &7/ &6Atk: %atk% &7/ &eDef: %def%"
                 .replace("%hp%", String.valueOf(getIntFromStat(Stats.HP, p, true)))
                 .replace("%atk%", String.valueOf(getIntFromStat(Stats.ATTACK, p, true)))
-                .replace("%def%", String.valueOf(getIntFromStat(Stats.DEFENCE, p, true)))
-        );
-
-        list.add("&9SpA: %spa% &7/ &aSpD: %spd% &7/ &dSpe: %spe%"
+                .replace("%def%", String.valueOf(getIntFromStat(Stats.DEFENCE, p, true))), "&9SpA: %spa% &7/ &aSpD: %spd% &7/ &dSpe: %spe%"
                 .replace("%spa%", String.valueOf(getIntFromStat(Stats.SPECIAL_ATTACK, p, true)))
                 .replace("%spd%", String.valueOf(getIntFromStat(Stats.SPECIAL_DEFENCE, p, true)))
-                .replace("%spe%", String.valueOf(getIntFromStat(Stats.SPEED, p, true)))
-        );
-
-        list.add("&7EVS: (&f%evs%%&7)".replace("%evs%", String.valueOf(getEVSPercentage(1, p))));
-        list.add("&cHP: %hp% &7/ &6Atk: %atk% &7/ &eDef: %def%"
+                .replace("%spe%", String.valueOf(getIntFromStat(Stats.SPEED, p, true))), "&7EVS: (&f%evs%%&7)".replace("%evs%", String.valueOf(getEVSPercentage(1, p))), "&cHP: %hp% &7/ &6Atk: %atk% &7/ &eDef: %def%"
                 .replace("%hp%", String.valueOf(getIntFromStat(Stats.HP, p, false)))
                 .replace("%atk%", String.valueOf(getIntFromStat(Stats.ATTACK, p, false)))
-                .replace("%def%", String.valueOf(getIntFromStat(Stats.DEFENCE, p, false)))
-        );
-
-        list.add("&9SpA: %spa% &7/ &aSpD: %spd% &7/ &dSpe: %spe%"
+                .replace("%def%", String.valueOf(getIntFromStat(Stats.DEFENCE, p, false))), "&9SpA: %spa% &7/ &aSpD: %spd% &7/ &dSpe: %spe%"
                 .replace("%spa%", String.valueOf(getIntFromStat(Stats.SPECIAL_ATTACK, p, false)))
                 .replace("%spd%", String.valueOf(getIntFromStat(Stats.SPECIAL_DEFENCE, p, false)))
-                .replace("%spe%", String.valueOf(getIntFromStat(Stats.SPEED, p, false)))
-        );
+                .replace("%spe%", String.valueOf(getIntFromStat(Stats.SPEED, p, false)))));
 
 
         return list;
@@ -132,10 +110,12 @@ public class Util
     public static List<String> formattedArrayList(List<String> list) {
 
         List<String> formattedList = new ArrayList<>();
-        for (String s:list) {
-            formattedList.add(formattedString(s));
-        }
+        for (String s:list) formattedList.add(formattedString(s));
 
         return formattedList;
+    }
+
+    public static List<Component> formattedComponentList(List<String> s) {
+        return s.stream().map(str -> Component.literal(formattedString(str))).collect(Collectors.toList());
     }
 }

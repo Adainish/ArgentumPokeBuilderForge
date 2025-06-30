@@ -12,6 +12,7 @@ import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonItems;
+import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.api.abilities.AbilityPool;
 import com.cobblemon.mod.common.api.abilities.PotentialAbility;
@@ -30,10 +31,13 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.adainish.argentumpokebuilderforge.ArgentumPokeBuilderForge;
 import io.github.adainish.argentumpokebuilderforge.enumerations.BuilderType;
 import io.github.adainish.argentumpokebuilderforge.util.Util;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -223,8 +227,8 @@ public class PokeBuilder
                     if (stat.equals(Stats.ACCURACY) || stat.equals(Stats.EVASION))
                         continue;
                     GooeyButton gooeyButton = GooeyButton.builder()
-                            .title(Util.formattedString("&e" + stat.getDisplayName().getString()))
                             .display(new ItemStack(CobblemonItems.MUSCLE_BAND.asItem()))
+                            .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&e" + stat.getDisplayName().getString())))
                             .onClick(b -> {
                                 this.selectedStat = stat;
                                 //go to amount edit menu
@@ -239,10 +243,11 @@ public class PokeBuilder
 
                 this.selectedPokemon.getForm().getAbilities().forEach(potentialAbility -> {
                     try {
+                        var ability = potentialAbility.getTemplate().create(true, Priority.NORMAL).getDescription();
                         GooeyButton button = GooeyButton.builder()
-                                .title(Util.formattedString("&e%ability%".replace("%ability%", potentialAbility.getTemplate().getName())))
-                                .lore(Util.formattedArrayList(Arrays.asList(potentialAbility.getTemplate().create(true).getDescription())))
                                 .display(new ItemStack(CobblemonItems.BLACK_SLUDGE.asItem()))
+                                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&e%ability%".replace("%ability%", potentialAbility.getTemplate().getName()))))
+                                .with(DataComponents.LORE, new ItemLore(Util.formattedComponentList(Arrays.asList(ability))))
                                 .onClick(b -> {
                                     this.potentialAbility = potentialAbility;
                                     UIManager.openUIForcefully(b.getPlayer(), purchaseGUI());
@@ -262,8 +267,9 @@ public class PokeBuilder
 //            case FORM -> {
 //                selectedPokemon.getSpecies().getForms().forEach(formData -> {
 //                    GooeyButton button = GooeyButton.builder()
-//                            .title(Util.formattedString("&b" + formData.getName()))
-//                            .display(new ItemStack(CobblemonItems.NEST_BALL.get()))
+//            .display(new ItemStack(CobblemonItems.NEST_BALL.get()))
+//                            .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&b" + formData.getName())))
+//
 //                            .onClick(b -> {
 //                                //go to purchase
 //                                this.speciesFeature = formData;
@@ -272,8 +278,9 @@ public class PokeBuilder
 //                            .build();
 //                    if (selectedPokemon.getForm().equals(formData))
 //                        button = GooeyButton.builder()
-//                                .title(Util.formattedString("&cAlready on this form"))
-//                                .display(new ItemStack(Items.TNT))
+            //           .display(new ItemStack(Items.TNT))
+//                                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&cAlready on this form")))
+//
 //                                .build();
 //                    buttons.add(button);
 //                });
@@ -285,8 +292,8 @@ public class PokeBuilder
                 if (selectedPokemon.getShiny())
                 {
                     button = GooeyButton.builder()
-                            .title(Util.formattedString("&cUnshiny"))
                             .display(new ItemStack(Items.ENDER_PEARL))
+                            .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&cUnshiny")))
                             .onClick(b -> {
                                 //open purchase
                                 this.selectedAction = "false";
@@ -295,8 +302,8 @@ public class PokeBuilder
                             .build();
                 } else {
                     button = GooeyButton.builder()
-                            .title(Util.formattedString("&aShiny"))
                             .display(new ItemStack(CobblemonItems.SHINY_STONE.asItem()))
+                            .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&aShiny")))
                             .onClick(b -> {
                                 //open purchase
                                 this.selectedAction = "true";
@@ -315,25 +322,25 @@ public class PokeBuilder
                     if (gender.equals(Gender.GENDERLESS))
                         continue;
                     GooeyButton button = GooeyButton.builder()
-                            .title(Util.formattedString("&e" + gender.name()))
+                            .display(new ItemStack(Items.LIME_DYE))
+                            .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&e" + gender.name())))
                             .onClick(b -> {
                                 //do purchase
                                 this.selectedAction = gender.name();
                                 UIManager.openUIForcefully(b.getPlayer(), purchaseGUI());
                             })
-                            .display(new ItemStack(Items.LIME_DYE))
                             .build();
 
                     if (selectedPokemon.getGender().equals(gender))
                         button = GooeyButton.builder()
-                                .title(Util.formattedString("&cAlready this gender"))
                                 .display(new ItemStack(Items.TNT))
+                                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&cAlready this gender")))
                                 .build();
                     if (isPokemonNonGenderExchangeable(this.selectedPokemon))
                     {
                         button = GooeyButton.builder()
-                                .title(Util.formattedString("&cThis Pokemon's Gender can't change!"))
                                 .display(new ItemStack(Items.TNT))
+                                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&cThis Pokemon's Gender can't change!")))
                                 .build();
                     }
                     buttons.add(button);
@@ -343,9 +350,9 @@ public class PokeBuilder
             case NATURE -> {
                 Natures.INSTANCE.all().forEach(nature -> {
                     GooeyButton button = GooeyButton.builder()
-                            .title(Util.formattedString("") + nature.getDisplayName().replace("cobblemon", "").replaceAll("\\.", "").replace("nature", ""))
-                            .lore(Util.formattedArrayList(Arrays.asList("&a+" + getOrDefaultStringStat(nature.getIncreasedStat()), "&c-" + getOrDefaultStringStat(nature.getDecreasedStat()))))
                             .display(new ItemStack(CobblemonItems.MIRACLE_SEED.asItem()))
+                            .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("") + nature.getDisplayName().replace("cobblemon", "").replaceAll("\\.", "").replace("nature", "")))
+                            .with(DataComponents.LORE, new ItemLore(Util.formattedComponentList(Arrays.asList("&a+" + getOrDefaultStringStat(nature.getIncreasedStat()), "&c-" + getOrDefaultStringStat(nature.getDecreasedStat())))))
                             .onClick(b -> {
                                 //open purchase
                                 this.selectedAction = nature.getName().toString();
@@ -354,8 +361,8 @@ public class PokeBuilder
                             .build();
                     if (selectedPokemon.getNature().equals(nature))
                         button = GooeyButton.builder()
-                                .title(Util.formattedString("&cAlready has this nature"))
                                 .display(new ItemStack(Items.TNT))
+                                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&cAlready has this nature")))
                                 .build();
                     buttons.add(button);
                 });
@@ -364,8 +371,8 @@ public class PokeBuilder
             case POKEBALL -> {
                 PokeBalls.INSTANCE.all().forEach(pokeBall -> {
                     GooeyButton button = GooeyButton.builder()
-                            .title(Util.formattedString("") + pokeBall.getName().getPath().replace("_", " "))
                             .display(new ItemStack(pokeBall.item()))
+                            .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("") + pokeBall.getName().getPath().replace("_", " ")))
                             .onClick(b -> {
                                 //open purchase
                                 selectedAction = pokeBall.getName().toString();
@@ -374,8 +381,8 @@ public class PokeBuilder
                             .build();
                     if (selectedPokemon.getCaughtBall().equals(pokeBall))
                         button = GooeyButton.builder()
-                                .title(Util.formattedString("&cAlready has this poke ball"))
                                 .display(new ItemStack(Items.TNT))
+                                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&cAlready has this poke ball")))
                                 .build();
                     buttons.add(button);
                 });
@@ -399,8 +406,8 @@ public class PokeBuilder
             if (!ArgentumPokeBuilderForge.config.pokeBuilderDataManager.attributeEnabledStatus.getOrDefault(builderType, false))
                 continue;
             GooeyButton button = GooeyButton.builder()
-                    .title(Util.formattedString("&b" + builderType.name().toLowerCase()))
                     .display(getIcon(builderType))
+                    .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&b" + builderType.name().toLowerCase())))
                     .onClick(b -> {
                         this.builderType = builderType;
                         this.amount = 0;
@@ -422,34 +429,31 @@ public class PokeBuilder
     {
         List<Button> buttons = new ArrayList<>();
 
-        try {
-            PartyStore partyStore = Cobblemon.INSTANCE.getStorage().getParty(assignedPlayer.uuid);
-            partyStore.forEach(pokemon -> {
-                GooeyButton button;
-                if (!isBlackListed(pokemon)) {
-
-                    button = GooeyButton.builder()
-                            .title(Util.formattedString(pokemon.getSpecies().getName()))
-                            .display(Util.returnIcon(pokemon))
-                            .lore(Util.formattedArrayList(Util.pokemonLore(pokemon)))
-                            .onClick(b -> {
-                                this.selectedPokemon = pokemon;
-                                //open builder type selection GUI
-                                UIManager.openUIForcefully(b.getPlayer(), builderTypeGUI());
-                            })
-                            .build();
-                } else {
-                    button = GooeyButton.builder()
-                            .title(Util.formattedString("&4&lBlacklisted"))
-                            .lore(Util.formattedArrayList(Arrays.asList("&c&l(&4&l!&c&l) &4You may not modify this Pokemon!")))
-                            .display(new ItemStack(Items.BARRIER))
-                            .build();
-                }
-                buttons.add(button);
-            });
-        } catch (NoPokemonStoreException e) {
-
-        }
+        PartyStore partyStore = Cobblemon.INSTANCE.getStorage().getParty(assignedPlayer.uuid, ArgentumPokeBuilderForge.getServer().registryAccess());
+        partyStore.forEach(pokemon -> {
+            if (pokemon == null)
+                return;
+            GooeyButton button;
+            if (!isBlackListed(pokemon)) {
+                button = GooeyButton.builder()
+                        .display(Util.returnIcon(pokemon))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString(pokemon.getSpecies().getName())))
+                        .with(DataComponents.LORE, new ItemLore(Util.formattedComponentList(Util.formattedArrayList(Util.pokemonLore(pokemon)))))
+                        .onClick(b -> {
+                            this.selectedPokemon = pokemon;
+                            //open builder type selection GUI
+                            UIManager.openUIForcefully(b.getPlayer(), builderTypeGUI());
+                        })
+                        .build();
+            } else {
+                button = GooeyButton.builder()
+                        .display(new ItemStack(Items.BARRIER))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&4&lBlacklisted")))
+                        .with(DataComponents.LORE, new ItemLore(Util.formattedComponentList(Util.formattedArrayList(Arrays.asList("&c&l(&4&l!&c&l) &4You may not modify this Pokemon!")))))
+                        .build();
+            }
+            buttons.add(button);
+        });
         return buttons;
     }
 
@@ -502,16 +506,14 @@ public class PokeBuilder
                 break;
             }
             case ABILITY -> {
-                Ability ability = this.potentialAbility.getTemplate().create(true);
+                Ability ability = this.potentialAbility.getTemplate().create(true, Priority.NORMAL);
 
-                if (ability != null) {
-                    selectedPokemon.setAbility(ability);
-                    message = "&aAdjusted your Pokemon's ability to %ability%".replace("%ability%", ability.getName());
-                }
+                selectedPokemon.setAbility$common(ability);
+                message = "&aAdjusted your Pokemon's ability to %ability%".replace("%ability%", ability.getName());
                 break;
             }
             case POKEBALL -> {
-                PokeBall pokeBall = PokeBalls.INSTANCE.getPokeBall(new ResourceLocation(this.selectedAction));
+                PokeBall pokeBall = PokeBalls.INSTANCE.getPokeBall(ResourceLocation.tryParse(this.selectedAction));
                 if (pokeBall != null) {
                     selectedPokemon.setCaughtBall(pokeBall);
                     message = "&aAdjusted your Pokemon's pokeball to %pokeball%".replace("%pokeball%", pokeBall.getName().getPath().toString().replaceAll("_", " "));
@@ -519,7 +521,7 @@ public class PokeBuilder
                 break;
             }
             case NATURE -> {
-                Nature nature = Natures.INSTANCE.getNature(new ResourceLocation(this.selectedAction));
+                Nature nature = Natures.INSTANCE.getNature(ResourceLocation.tryParse(this.selectedAction));
                 if (nature != null) {
                     selectedPokemon.setNature(nature);
                     message = "&aAdjusted your Pokemon's nature to %nature%".replace("%nature%", nature.getDisplayName().replace("cobblemon", "").replaceAll("\\.", "").replace("nature", ""));
@@ -555,7 +557,7 @@ public class PokeBuilder
 
         GooeyButton back = GooeyButton.builder()
                 .display(new ItemStack(Items.ARROW))
-                .title(Util.formattedString("&eGo Back"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&eGo Back")))
                 .onClick(b -> {
                     if (builderType.equals(BuilderType.IVS) || builderType.equals(BuilderType.EVS) || builderType.equals(BuilderType.FRIENDSHIP))
                     {
@@ -565,9 +567,9 @@ public class PokeBuilder
                 .build();
 
         GooeyButton confirm = GooeyButton.builder()
-                .title(Util.formattedString("&aConfirm Modification"))
-                .lore(Util.formattedArrayList(Arrays.asList("&7Current cost: &b%amount%".replace("%amount%", String.valueOf(getCost(builderType))))))
                 .display(new ItemStack(Items.GREEN_DYE))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&aConfirm Modification")))
+                .with(DataComponents.LORE, new ItemLore(Util.formattedComponentList(Arrays.asList("&7Current cost: &b%amount%".replace("%amount%", String.valueOf(getCost(builderType)))))))
                 .onClick(b -> {
                     if (canAfford())
                     {
@@ -596,16 +598,16 @@ public class PokeBuilder
 
         GooeyButton back = GooeyButton.builder()
                 .display(new ItemStack(Items.ARROW))
-                .title(Util.formattedString("&eGo Back"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&eGo Back")))
                 .onClick(b -> {
                     UIManager.openUIForcefully(b.getPlayer(), builderTypeGUI());
                 })
                 .build();
 
         GooeyButton confirm = GooeyButton.builder()
-                .title(Util.formattedString("&aConfirm Amount"))
-                .lore(Util.formattedArrayList(Arrays.asList("&7Current amount: &b%amount%".replace("%amount%", String.valueOf(amount)))))
                 .display(new ItemStack(Items.GREEN_DYE))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&aConfirm Amount")))
+                .with(DataComponents.LORE, new ItemLore(Util.formattedComponentList(Arrays.asList("&7Current amount: &b%amount%".replace("%amount%", String.valueOf(amount))))))
                 .onClick(b -> {
                     if (this.amount == 0)
                     {
@@ -623,8 +625,8 @@ public class PokeBuilder
         {
             case EVS, FRIENDSHIP -> {
                 GooeyButton increaseOne = GooeyButton.builder()
-                        .title(Util.formattedString("&a+1"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+1")))
                         .onClick(b -> {
                             increaseAmount(1);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -632,8 +634,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton increaseTen = GooeyButton.builder()
-                        .title(Util.formattedString("&a+10"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+10")))
                         .onClick(b -> {
                             increaseAmount(10);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -641,8 +643,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton increaseTwentyFive = GooeyButton.builder()
-                        .title(Util.formattedString("&a+25"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+25")))
                         .onClick(b -> {
                             increaseAmount(25);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -650,8 +652,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton increaseFifty = GooeyButton.builder()
-                        .title(Util.formattedString("&a+50"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+50")))
                         .onClick(b -> {
                             increaseAmount(50);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -659,8 +661,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton increaseHundred = GooeyButton.builder()
-                        .title(Util.formattedString("&a+100"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+100")))
                         .onClick(b -> {
                             increaseAmount(100);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -668,8 +670,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton increaseMax = GooeyButton.builder()
-                        .title(Util.formattedString("&a+Max Amount"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+Max Amount")))
                         .onClick(b -> {
                             increaseAmount(getMaxAmount());
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -684,8 +686,8 @@ public class PokeBuilder
                 builder.set(1, 6, increaseMax);
 
                 GooeyButton decreaseOne = GooeyButton.builder()
-                        .title(Util.formattedString("&c-1"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-1")))
                         .onClick(b -> {
                             decreaseAmount(1);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -693,8 +695,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton decreaseTen = GooeyButton.builder()
-                        .title(Util.formattedString("&c-10"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-10")))
                         .onClick(b -> {
                             decreaseAmount(10);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -702,8 +704,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton decreaseTwentyFive = GooeyButton.builder()
-                        .title(Util.formattedString("&c-25"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-25")))
                         .onClick(b -> {
                             decreaseAmount(25);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -711,8 +713,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton decreaseFifty = GooeyButton.builder()
-                        .title(Util.formattedString("&c-50"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-50")))
                         .onClick(b -> {
                             decreaseAmount(50);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -720,8 +722,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton decreaseHundred = GooeyButton.builder()
-                        .title(Util.formattedString("&c-100"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-100")))
                         .onClick(b -> {
                             decreaseAmount(100);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -729,8 +731,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton decreaseMax = GooeyButton.builder()
-                        .title(Util.formattedString("&c-Max Amount"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-Max Amount")))
                         .onClick(b -> {
                             decreaseAmount(getMaxAmount());
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -747,8 +749,8 @@ public class PokeBuilder
             }
             case IVS -> {
                 GooeyButton increaseOne = GooeyButton.builder()
-                        .title(Util.formattedString("&a+1"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+1")))
                         .onClick(b -> {
                             increaseAmount(1);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -756,8 +758,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton increaseTen = GooeyButton.builder()
-                        .title(Util.formattedString("&a+10"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+10")))
                         .onClick(b -> {
                             increaseAmount(10);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -765,8 +767,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton increaseTwentyFive = GooeyButton.builder()
-                        .title(Util.formattedString("&a+25"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+25")))
                         .onClick(b -> {
                             increaseAmount(25);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -775,8 +777,8 @@ public class PokeBuilder
 
 
                 GooeyButton increaseMax = GooeyButton.builder()
-                        .title(Util.formattedString("&a+Max Amount"))
                         .display(new ItemStack(CobblemonItems.ELECTIRIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&a+Max Amount")))
                         .onClick(b -> {
                             increaseAmount(getMaxAmount());
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -789,8 +791,8 @@ public class PokeBuilder
                 builder.set(1, 7, increaseMax);
 
                 GooeyButton decreaseOne = GooeyButton.builder()
-                        .title(Util.formattedString("&c-1"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-1")))
                         .onClick(b -> {
                             decreaseAmount(1);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -798,8 +800,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton decreaseTen = GooeyButton.builder()
-                        .title(Util.formattedString("&c-10"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-10")))
                         .onClick(b -> {
                             decreaseAmount(10);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -807,8 +809,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton decreaseTwentyFive = GooeyButton.builder()
-                        .title(Util.formattedString("&c-25"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-25")))
                         .onClick(b -> {
                             decreaseAmount(25);
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -816,8 +818,8 @@ public class PokeBuilder
                         .build();
 
                 GooeyButton decreaseMax = GooeyButton.builder()
-                        .title(Util.formattedString("&c-Max Amount"))
                         .display(new ItemStack(CobblemonItems.MAGMARIZER.asItem()))
+                        .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&c-Max Amount")))
                         .onClick(b -> {
                             decreaseAmount(getMaxAmount());
                             UIManager.openUIForcefully(b.getPlayer(), statAmountGUI());
@@ -844,19 +846,19 @@ public class PokeBuilder
         PlaceholderButton placeHolderButton = new PlaceholderButton();
         LinkedPageButton previous = LinkedPageButton.builder()
                 .display(new ItemStack(Items.SPECTRAL_ARROW))
-                .title(Util.formattedString("Previous Page"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("Previous Page")))
                 .linkType(LinkType.Previous)
                 .build();
 
         LinkedPageButton next = LinkedPageButton.builder()
                 .display(new ItemStack(Items.SPECTRAL_ARROW))
-                .title(Util.formattedString("Next Page"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("Next Page")))
                 .linkType(LinkType.Next)
                 .build();
 
         GooeyButton back = GooeyButton.builder()
                 .display(new ItemStack(Items.ARROW))
-                .title(Util.formattedString("&eGo Back"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&eGo Back")))
                 .onClick(b -> {
                     UIManager.openUIForcefully(b.getPlayer(), builderTypeGUI());
                 })
@@ -879,20 +881,20 @@ public class PokeBuilder
         PlaceholderButton placeHolderButton = new PlaceholderButton();
         LinkedPageButton previous = LinkedPageButton.builder()
                 .display(new ItemStack(Items.SPECTRAL_ARROW))
-                .title(Util.formattedString("Previous Page"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("Previous Page")))
                 .linkType(LinkType.Previous)
                 .build();
 
         LinkedPageButton next = LinkedPageButton.builder()
                 .display(new ItemStack(Items.SPECTRAL_ARROW))
-                .title(Util.formattedString("Next Page"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("Next Page")))
                 .linkType(LinkType.Next)
                 .build();
 
 
         GooeyButton back = GooeyButton.builder()
                 .display(new ItemStack(Items.ARROW))
-                .title(Util.formattedString("&eGo Back"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("&eGo Back")))
                 .onClick(b -> {
                     UIManager.openUIForcefully(b.getPlayer(), mainGUI());
                 })
@@ -916,13 +918,13 @@ public class PokeBuilder
         PlaceholderButton placeHolderButton = new PlaceholderButton();
         LinkedPageButton previous = LinkedPageButton.builder()
                 .display(new ItemStack(Items.SPECTRAL_ARROW))
-                .title(Util.formattedString("Previous Page"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("Previous Page")))
                 .linkType(LinkType.Previous)
                 .build();
 
         LinkedPageButton next = LinkedPageButton.builder()
                 .display(new ItemStack(Items.SPECTRAL_ARROW))
-                .title(Util.formattedString("Next Page"))
+                .with(DataComponents.CUSTOM_NAME, Component.literal(Util.formattedString("Next Page")))
                 .linkType(LinkType.Next)
                 .build();
 
